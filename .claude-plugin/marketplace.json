@@ -7,13 +7,13 @@
   },
   "plugins": [
     {
-      "name": "pariksha",
-      "description": "Pariksha — Iksula's QA automation architect. Onboards a Magento/Adobe Commerce or Shopify client into a config-driven Playwright suite, writes tests to standard, and triages failures. MENA, India and US aware.",
+      "name": "gatekeeper",
+      "description": "Gatekeeper — Iksula's QA automation architect. Onboards a Magento/Adobe Commerce or Shopify client into a config-driven Playwright suite, writes tests to standard, and triages failures. MENA, India and US aware.",
       "author": {
         "name": "Iksula"
       },
       "category": "testing",
-      "source": "./plugins/pariksha"
+      "source": "./plugins/gatekeeper"
     }
   ]
 }

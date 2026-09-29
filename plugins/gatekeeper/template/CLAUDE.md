@@ -1,7 +1,7 @@
 # E2E suite: rules for Claude
 
-This repo is a client test suite built from Iksula's Pariksha template. The Pariksha plugin
-(`/pariksha-onboard`, `/pariksha-write-test`, `/pariksha-triage`) knows this layout.
+This repo is a client test suite built from Iksula's Gatekeeper template. The Gatekeeper plugin
+(`/gatekeeper-onboard`, `/gatekeeper-write-test`, `/gatekeeper-triage`) knows this layout.
 
 ## Layout
 - `client.config.ts`: the only per-client file. Markets, storefront URLs, test products, selector overrides.

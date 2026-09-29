@@ -1,11 +1,11 @@
 ---
-name: pariksha-write-test
-description: Write, extend or refactor end-to-end tests in a Pariksha client suite to Iksula standards — correct layer (API vs UI), tags, fixtures, market-neutral assertions, resilient selectors. Use when asked to "add a test for X", "automate this journey", "cover this bug", "write the B2B / COD / coupon / RTL test", "convert this manual test case", or "/pariksha-write-test".
+name: gatekeeper-write-test
+description: Write, extend or refactor end-to-end tests in a Gatekeeper client suite to Iksula standards — correct layer (API vs UI), tags, fixtures, market-neutral assertions, resilient selectors. Use when asked to "add a test for X", "automate this journey", "cover this bug", "write the B2B / COD / coupon / RTL test", "convert this manual test case", or "/gatekeeper-write-test".
 ---
 
-# Write a Pariksha test
+# Write a Gatekeeper test
 
-Read the client repo's `CLAUDE.md` and `client.config.ts` first. Load `pariksha-standards` for the rules.
+Read the client repo's `CLAUDE.md` and `client.config.ts` first. Load `gatekeeper-standards` for the rules.
 
 ## 1. Decide the layer before writing code
 

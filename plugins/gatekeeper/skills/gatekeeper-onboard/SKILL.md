@@ -1,9 +1,9 @@
 ---
-name: pariksha-onboard
-description: Onboard a new commerce client (Magento / Adobe Commerce or Shopify) into Iksula's Pariksha Playwright suite — collect the intake, scaffold the repo from the template, fill client.config.ts, verify selectors and test data against staging, get the doctor and smoke runs green, and write the client test plan. Use when someone says "set up automation for <client>", "onboard <client> to Pariksha", "new client test suite", "start E2E for <site>", or "/pariksha-onboard".
+name: gatekeeper-onboard
+description: Onboard a new commerce client (Magento / Adobe Commerce or Shopify) into Iksula's Gatekeeper Playwright suite — collect the intake, scaffold the repo from the template, fill client.config.ts, verify selectors and test data against staging, get the doctor and smoke runs green, and write the client test plan. Use when someone says "set up automation for <client>", "onboard <client> to Gatekeeper", "new client test suite", "start E2E for <site>", or "/gatekeeper-onboard".
 ---
 
-# Onboard a client to Pariksha
+# Onboard a client to Gatekeeper
 
 Goal: the client has its own repo with a correct `client.config.ts`, a green `npm run doctor`, a green `npm run test:pr`, CI wired, and a one-page test plan. Target: one working day.
 
@@ -52,7 +52,7 @@ For `checkoutFlow: 'custom'`, walk the staging checkout as a guest with the test
 
 ## Step 6: First runs
 
-`npm run test:pr` and then `npm run test:post-deploy`. Triage anything red with `pariksha-triage`. A test that cannot work for this client (for example no guest checkout) is skipped through config, not deleted.
+`npm run test:pr` and then `npm run test:post-deploy`. Triage anything red with `gatekeeper-triage`. A test that cannot work for this client (for example no guest checkout) is skipped through config, not deleted.
 
 ## Step 7: CI
 
@@ -63,7 +63,7 @@ For `checkoutFlow: 'custom'`, walk the staging checkout as a guest with the test
 
 ## Step 8: Test plan
 
-Fill `references/test-plan-template.md` for this client and save it as `docs/TEST-PLAN.md` in the client repo. Use the market gotchas from `src/markets/markets.ts` and the platform gotchas from `pariksha-standards`. Be specific: name their markets, their payment methods and their riskiest flows.
+Fill `references/test-plan-template.md` for this client and save it as `docs/TEST-PLAN.md` in the client repo. Use the market gotchas from `src/markets/markets.ts` and the platform gotchas from `gatekeeper-standards`. Be specific: name their markets, their payment methods and their riskiest flows.
 
 ## Finish
 

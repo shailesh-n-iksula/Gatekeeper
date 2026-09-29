@@ -5,7 +5,7 @@ import type { Checkout, GuestOrder } from './checkout';
  * Client-specific checkout (Hyvä Checkout, Amasty/OneStepCheckout, headless PWA, Shopify
  * checkout extensions...). Used when client.config.ts sets checkoutFlow: 'custom'.
  *
- * Ask the Pariksha agent: "write the custom checkout for this client". It will walk the
+ * Ask the Gatekeeper agent: "write the custom checkout for this client". It will walk the
  * staging checkout in a browser and fill this in.
  */
 export class CustomCheckout implements Checkout {

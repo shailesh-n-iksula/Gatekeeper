@@ -1,6 +1,6 @@
 ---
-name: pariksha-triage
-description: Triage a failing or flaky Pariksha test run — read the report and traces, classify each failure (product bug, test bug, environment, third party, test data), explain it in business terms, and recommend fix, quarantine or bug report. Use when someone says "why is the nightly red", "triage these failures", "is this a real bug", "this test is flaky", "what broke on staging", or "/pariksha-triage".
+name: gatekeeper-triage
+description: Triage a failing or flaky Gatekeeper test run — read the report and traces, classify each failure (product bug, test bug, environment, third party, test data), explain it in business terms, and recommend fix, quarantine or bug report. Use when someone says "why is the nightly red", "triage these failures", "is this a real bug", "this test is flaky", "what broke on staging", or "/gatekeeper-triage".
 ---
 
 # Triage a run

@@ -1,4 +1,4 @@
-# Pariksha client intake
+# Gatekeeper client intake
 
 Send this to the client's tech lead or your delivery manager before onboarding. Everything here
 is about **staging**. No passwords in this document: those go into the CI secret directly.

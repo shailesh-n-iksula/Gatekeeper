@@ -1,6 +1,6 @@
 # E2E test suite
 
-Built on Iksula's **Pariksha** template: Playwright + TypeScript for Magento / Adobe Commerce and
+Built on Iksula's **Gatekeeper** template: Playwright + TypeScript for Magento / Adobe Commerce and
 Shopify storefronts across MENA, India and the US.
 
 ## First run (engineer, ~20 minutes)

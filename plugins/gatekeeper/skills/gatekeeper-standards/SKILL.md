@@ -1,9 +1,9 @@
 ---
-name: pariksha-standards
+name: gatekeeper-standards
 description: Iksula's QA automation standards for commerce E2E suites — the test pyramid split, tagging and suite policy, locator and wait rules, data isolation, third-party handling, quarantine policy, plus reference sheets on MENA/India/US market rules and Magento/Shopify testing gotchas. Load before writing, reviewing or judging an automated test, when planning coverage for a client, or when asked "what should we automate", "is this test good", "Magento/Shopify testing gotchas", "how do we test RTL/COD/VAT".
 ---
 
-# Pariksha standards
+# Gatekeeper standards
 
 ## The five rules that prevent most suite failures
 1. **Right layer.** Calculations and rules go to the API; the UI samples them. About 10% of checks should need a full browser journey.

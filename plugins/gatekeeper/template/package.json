@@ -2,7 +2,7 @@
   "name": "client-e2e",
   "version": "0.1.0",
   "private": true,
-  "description": "End-to-end test suite built on Iksula's Pariksha template",
+  "description": "End-to-end test suite built on Iksula's Gatekeeper template",
   "scripts": {
     "test": "playwright test",
     "test:pr": "SUITE=pr playwright test",

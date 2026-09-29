@@ -23,7 +23,7 @@
 <From src/markets/markets.ts gotchas, filtered to this client's markets, with what we test for each.>
 
 ## Platform risks for this client
-<From pariksha-standards/references/platforms.md, filtered to this client's platform/theme/extensions.>
+<From gatekeeper-standards/references/platforms.md, filtered to this client's platform/theme/extensions.>
 
 ## Not automated, and why
 <3D/AR fidelity, real 3DS challenges on live PSPs, email rendering in clients …>

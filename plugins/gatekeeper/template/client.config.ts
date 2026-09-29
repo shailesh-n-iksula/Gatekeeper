@@ -4,7 +4,7 @@ import { defineClient } from './src/config/types';
  * THE ONLY FILE YOU MUST EDIT PER CLIENT.
  *
  * Start from examples/magento.client.ts or examples/shopify.client.ts, or ask the
- * Pariksha agent: "/pariksha-onboard". It fills this in and verifies it against staging.
+ * Gatekeeper agent: "/gatekeeper-onboard". It fills this in and verifies it against staging.
  *
  * Rules:
  *  - Paths have NO leading slash ('checkout/cart/', 'products/tee').
