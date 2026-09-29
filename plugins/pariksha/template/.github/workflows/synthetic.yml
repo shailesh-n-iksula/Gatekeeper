@@ -1,0 +1,40 @@
+name: Production synthetic checks
+
+# Read-only checks on PRODUCTION every 15 minutes: pages load, search works, prices show
+# in the right currency. The fixtures refuse to run anything not tagged @synthetic here.
+# Enable only after the client signs off on synthetic traffic to production.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: synthetic
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUITE: synthetic
+      TARGET_ENV: production
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          env-file: ${{ secrets.QA_PROD_ENV_FILE }}
+      - run: npx playwright test --retries=1
+      - if: failure() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          curl -s -X POST -H 'Content-type: application/json' "$SLACK_WEBHOOK_URL" \
+            --data "{\"text\":\":rotating_light: Production synthetic check failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-failure
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7

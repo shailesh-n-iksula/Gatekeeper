@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "iksula-qa",
+  "description": "Iksula's QA automation plugins for commerce delivery teams",
+  "owner": {
+    "name": "Iksula"
+  },
+  "plugins": [
+    {
+      "name": "pariksha",
+      "description": "Pariksha — Iksula's QA automation architect. Onboards a Magento/Adobe Commerce or Shopify client into a config-driven Playwright suite, writes tests to standard, and triages failures. MENA, India and US aware.",
+      "author": {
+        "name": "Iksula"
+      },
+      "category": "testing",
+      "source": "./plugins/pariksha"
+    }
+  ]
+}

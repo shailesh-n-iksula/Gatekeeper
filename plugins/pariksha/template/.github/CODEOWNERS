@@ -1,0 +1,9 @@
+# Replace the teams below with the client's squads. Owners review test changes in their area
+# and receive the failure alerts for it.
+*                         @iksula/qa-leads
+/client.config.ts         @iksula/qa-leads
+/src/                     @iksula/qa-leads
+/tests/checkout/          @iksula/qa-leads @client/checkout-team
+/tests/cart/              @iksula/qa-leads @client/checkout-team
+/tests/b2b/               @iksula/qa-leads @client/b2b-team
+/tests/i18n/              @iksula/qa-leads @client/localisation-team

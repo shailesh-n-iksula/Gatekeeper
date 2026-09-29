@@ -1,0 +1,29 @@
+name: Setup test runner
+description: Node, dependencies, Playwright browsers, and the .env secret
+inputs:
+  browsers:
+    description: Browsers to install (space separated)
+    default: chromium
+  env-file:
+    description: Contents of the QA_ENV_FILE secret
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - uses: actions/cache@v4
+      with:
+        path: |
+          ~/.npm
+          ~/.cache/ms-playwright
+        key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json', 'package.json') }}-${{ inputs.browsers }}
+    - shell: bash
+      run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
+    - shell: bash
+      run: npx playwright install --with-deps ${{ inputs.browsers }}
+    - shell: bash
+      env:
+        QA_ENV_FILE: ${{ inputs.env-file }}
+      run: printf '%s\n' "$QA_ENV_FILE" > .env

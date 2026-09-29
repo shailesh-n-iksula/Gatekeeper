@@ -1,0 +1,34 @@
+{
+  "name": "client-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "End-to-end test suite built on Iksula's Pariksha template",
+  "scripts": {
+    "test": "playwright test",
+    "test:pr": "SUITE=pr playwright test",
+    "test:post-deploy": "SUITE=post-deploy playwright test",
+    "test:nightly": "SUITE=nightly playwright test",
+    "test:weekly": "SUITE=weekly playwright test",
+    "test:synthetic": "SUITE=synthetic TARGET_ENV=production playwright test",
+    "doctor": "SUITE=doctor playwright test",
+    "visual:update": "SUITE=nightly playwright test --grep @visual --update-snapshots",
+    "flaky": "tsx scripts/flaky-report.ts",
+    "report": "playwright show-report",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.0.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.10.0",
+    "eslint-plugin-playwright": "^2.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

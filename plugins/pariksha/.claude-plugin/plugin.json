@@ -1,0 +1,9 @@
+{
+  "name": "pariksha",
+  "version": "0.1.0",
+  "description": "Iksula's QA automation architect for commerce clients. Onboards a Magento/Adobe Commerce or Shopify client into a ready Playwright suite in a day, writes tests to Iksula standards, and triages failures. MENA, India and US market-aware.",
+  "author": {
+    "name": "Iksula"
+  },
+  "keywords": ["qa", "test-automation", "playwright", "e2e", "magento", "adobe-commerce", "shopify", "mena", "iksula"]
+}

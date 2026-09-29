@@ -1,0 +1,74 @@
+name: Nightly regression
+
+# 21:30 UTC = 01:30 UAE/KSA, 03:00 India, 17:30 US East: low traffic on the shared staging server.
+on:
+  schedule:
+    - cron: '30 21 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: staging-nightly
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    env:
+      SUITE: nightly
+      SHARDED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          browsers: chromium webkit firefox
+          env-file: ${{ secrets.QA_ENV_FILE }}
+      - run: npx playwright test --shard=${{ matrix.shard }}/6
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-${{ matrix.shard }}
+          path: blob-report
+          retention-days: 3
+
+  quarantine:
+    # Quarantined tests keep running so we know when they are fixed. Never fails the workflow.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    env:
+      SUITE: quarantine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          env-file: ${{ secrets.QA_ENV_FILE }}
+      - run: npx playwright test --pass-with-no-tests
+
+  report:
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: blob-*
+          path: all-blob-reports
+          merge-multiple: true
+      - run: npx playwright merge-reports --reporter html,json ./all-blob-reports
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/results.json
+      - run: npm run flaky
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nightly-report
+          path: |
+            playwright-report
+            test-results/results.json
+          retention-days: 30

@@ -1,0 +1,48 @@
+name: PR checks
+
+# Runs on every pull request to this test repo.
+# There are no per-PR preview environments, so the smoke run targets shared staging:
+# it proves the tests themselves work. The release gate is post-deploy.yml.
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          env-file: ${{ secrets.QA_ENV_FILE }}
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: SUITE=pr npx playwright test --list
+
+  smoke:
+    needs: static
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUITE: pr
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          env-file: ${{ secrets.QA_ENV_FILE }}
+      - run: npx playwright test
+      - if: always()
+        run: npm run flaky
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 14

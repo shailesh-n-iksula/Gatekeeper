@@ -1,0 +1,127 @@
+# GitLab equivalent of .github/workflows. Delete whichever CI you do not use.
+#
+# CI/CD variables to create (Settings > CI/CD > Variables, type "File" for the env files):
+#   QA_ENV_FILE        staging .env contents (masked, protected)
+#   QA_PROD_ENV_FILE   production .env contents, synthetic checks only
+#   SLACK_WEBHOOK_URL  optional, for synthetic alerts
+#
+# Pipeline schedules (Build > Pipeline schedules), each with variable SUITE:
+#   nightly    30 21 * * *
+#   weekly     0 22 * * 5
+#   synthetic  */15 * * * *   (also set TARGET_ENV=production)
+#
+# Post-deploy gate: the application pipeline triggers this project after the staging deploy:
+#   curl -X POST --form token=$TRIGGER_TOKEN --form ref=main --form "variables[SUITE]=post-deploy" \
+#     https://gitlab.com/api/v4/projects/<id>/trigger/pipeline
+
+default:
+  image: node:22-bookworm
+  cache:
+    key:
+      files: [package.json]
+    paths: [.npm/]
+  before_script:
+    - if [ -f package-lock.json ]; then npm ci --cache .npm; else npm install --cache .npm; fi
+    - npx playwright install --with-deps ${BROWSERS:-chromium}
+    - if [ -n "$QA_ENV_FILE" ]; then cp "$QA_ENV_FILE" .env; fi
+
+stages: [static, test, report]
+
+variables:
+  SUITE: pr
+
+.artifacts: &artifacts
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths: [playwright-report/, test-results/, blob-report/]
+    reports:
+      junit: test-results/junit.xml
+
+static:
+  stage: static
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - npm run lint
+    - npm run typecheck
+    - SUITE=pr npx playwright test --list
+
+smoke:
+  stage: test
+  needs: [static]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - npx playwright test
+    - npm run flaky
+  <<: *artifacts
+
+post-deploy:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "trigger" && $SUITE == "post-deploy"
+    - if: $CI_PIPELINE_SOURCE == "web" && $SUITE == "post-deploy"
+  parallel: 3
+  variables:
+    SHARDED: '1'
+  script:
+    - npx playwright test --shard=$CI_NODE_INDEX/$CI_NODE_TOTAL
+  <<: *artifacts
+
+regression:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && ($SUITE == "nightly" || $SUITE == "weekly")
+  parallel: 6
+  timeout: 3h
+  variables:
+    SHARDED: '1'
+    BROWSERS: chromium webkit firefox
+  script:
+    - npx playwright test --shard=$CI_NODE_INDEX/$CI_NODE_TOTAL
+  <<: *artifacts
+
+quarantine:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SUITE == "nightly"
+  allow_failure: true
+  variables:
+    SUITE: quarantine
+  script:
+    - npx playwright test --pass-with-no-tests
+
+synthetic:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SUITE == "synthetic"
+  variables:
+    TARGET_ENV: production
+  before_script:
+    - if [ -f package-lock.json ]; then npm ci --cache .npm; else npm install --cache .npm; fi
+    - npx playwright install --with-deps chromium
+    - if [ -n "$QA_PROD_ENV_FILE" ]; then cp "$QA_PROD_ENV_FILE" .env; fi
+  script:
+    - npx playwright test --retries=1
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" = "failed" ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+        curl -s -X POST -H 'Content-type: application/json' "$SLACK_WEBHOOK_URL" \
+          --data "{\"text\":\":rotating_light: Production synthetic check failed: $CI_PIPELINE_URL\"}"
+      fi
+
+merge-report:
+  stage: report
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && ($SUITE == "nightly" || $SUITE == "weekly")
+      when: always
+    - if: $SUITE == "post-deploy"
+      when: always
+  script:
+    - PLAYWRIGHT_JSON_OUTPUT_NAME=test-results/results.json npx playwright merge-reports --reporter html,json ./blob-report
+    - npm run flaky
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths: [playwright-report/, test-results/results.json]

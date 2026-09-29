@@ -1,0 +1,35 @@
+name: Utilities
+
+# Manual jobs: config doctor (onboarding) and visual baseline refresh.
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: What to run
+        type: choice
+        options: [doctor, visual-baselines]
+        default: doctor
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          browsers: chromium webkit firefox
+          env-file: ${{ secrets.QA_ENV_FILE }}
+      - if: inputs.task == 'doctor'
+        run: npm run doctor
+      - if: inputs.task == 'visual-baselines'
+        # Baselines must come from Linux CI, not laptops. Download the artifact, review, commit.
+        run: npm run visual:update
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.task }}-output
+          path: |
+            playwright-report
+            tests/**/*-snapshots/**
+          retention-days: 14

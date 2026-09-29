@@ -1,0 +1,65 @@
+name: Post-deploy gate (staging)
+
+# THE RELEASE GATE. The client's application pipeline calls this after deploying to staging:
+#
+#   curl -X POST -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" \
+#     https://api.github.com/repos/<org>/<this-repo>/dispatches \
+#     -d '{"event_type":"staging-deployed","client_payload":{"version":"<build id>"}}'
+#
+# Every P0 journey × each market's primary storefront × desktop + mobile.
+on:
+  repository_dispatch:
+    types: [staging-deployed]
+  workflow_dispatch:
+
+concurrency:
+  group: staging-gate
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    env:
+      SUITE: post-deploy
+      SHARDED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          env-file: ${{ secrets.QA_ENV_FILE }}
+      - run: npx playwright test --shard=${{ matrix.shard }}/3
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-${{ matrix.shard }}
+          path: blob-report
+          retention-days: 3
+
+  report:
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: blob-*
+          path: all-blob-reports
+          merge-multiple: true
+      - run: npx playwright merge-reports --reporter html,json ./all-blob-reports
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/results.json
+      - run: npm run flaky
+      - uses: actions/upload-artifact@v4
+        with:
+          name: post-deploy-report
+          path: |
+            playwright-report
+            test-results/results.json
+          retention-days: 30
