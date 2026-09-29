@@ -32,6 +32,17 @@ gatekeeper/
 └── ROLLOUT_GUIDE.md                      ← for the owner: publish, pilot, roll out
 ```
 
+## Install
+
+Everyone on the team needs read access to this repository. Then, in Claude Code:
+
+```
+/plugin marketplace add shailesh-n-iksula/Gatekeeper
+/plugin install gatekeeper@iksula-qa
+```
+
+Restart Claude Code.
+
 ## Using it (after install)
 
 In Claude Code, inside any folder:

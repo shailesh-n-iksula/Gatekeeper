@@ -9,12 +9,11 @@ morning, then one pilot client for two weeks.
 
 Send this section to the engineer.
 
-**1. Create an empty private repository** named `gatekeeper` in Iksula's GitHub or GitLab, and push this folder:
+**1. The repository** is https://github.com/shailesh-n-iksula/Gatekeeper. Clone it:
 
 ```bash
+git clone https://github.com/shailesh-n-iksula/Gatekeeper.git gatekeeper
 cd gatekeeper
-git remote add origin git@github.com:<iksula-org>/gatekeeper.git
-git push -u origin main
 ```
 
 **2. Compile the template once.** It was written without Node available, so this is its first build:
@@ -33,13 +32,13 @@ Fix anything that fails, and commit `package-lock.json`.
 **3. Install the agent** in Claude Code:
 
 ```
-/plugin marketplace add <iksula-org>/gatekeeper
+/plugin marketplace add shailesh-n-iksula/Gatekeeper
 /plugin install gatekeeper@iksula-qa
 ```
 
 Restart Claude Code. Typing `/gatekeeper` should now show the four skills.
 
-**4. Tell the owner the repo path** so it can go in the announcement.
+**4. Consider moving the repo into Iksula's GitHub organisation** once the pilot works, so access follows the org rather than one person's account. GitHub redirects the old URL, but tell teammates to re-add the marketplace from the new path.
 
 ---
 
